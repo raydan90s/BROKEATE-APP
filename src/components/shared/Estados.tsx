@@ -5,7 +5,7 @@ import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 export function Cargando({ mensaje = 'Cargando…' }: { mensaje?: string }) {
   return (
     <View className="flex-1 items-center justify-center gap-3 bg-surface-canvas p-8">
-      <ActivityIndicator size="large" color="#1E3A8A" />
+      <ActivityIndicator size="large" color="#14375E" />
       <Text className="text-body text-text-secondary">{mensaje}</Text>
     </View>
   );

@@ -1,4 +1,8 @@
 /** @type {import('tailwindcss').Config} */
+
+// ── Tokens de Brokeate (Prototype/src/app/App.tsx · const C) ─────────────────
+// Azul marino dominante sobre blanco; verde/ámbar/rojo SOLO semánticos.
+// Los nombres se mantienen: las pantallas existentes se reestilizan con un pull.
 module.exports = {
   content: ['./App.{js,jsx,ts,tsx}', './src/**/*.{js,jsx,ts,tsx}'],
   presets: [require('nativewind/preset')],
@@ -15,14 +19,29 @@ module.exports = {
       },
       colors: {
         brand: {
-          primary: '#1E3A8A',
-          accent: '#84CC16',
+          // Botones, tabs activos y todo lo interactivo.
+          primary: '#14375E',
+          // Titulares y cifras grandes ("navy" del prototipo).
+          ink: '#0A2540',
+          // Azules intermedios: chips informativos, segmentos de gráficos.
+          mid: '#1E5C9B',
+          pale: '#3A85C9',
+          // El acento dejó de ser lima: verde institucional, solo para "aprobado"/éxito.
+          accent: '#1B8A5A',
+          // Oro: reservado al segmento "Oro" de los donuts (no es semántico).
+          gold: '#B7921A',
+        },
+        // Color por perfil de riesgo (PROFILE_COLORS del prototipo).
+        perfil: {
+          conservador: '#14375E',
+          moderado: '#C77700',
+          agresivo: '#C0362C',
         },
         brandAlpha: {
-          primarySoft: 'rgba(30, 58, 138, 0.06)',
-          primaryMedium: 'rgba(30, 58, 138, 0.18)',
-          accentSoft: 'rgba(132, 204, 22, 0.12)',
-          accentMedium: 'rgba(132, 204, 22, 0.18)',
+          primarySoft: '#EBF2FA',
+          primaryMedium: 'rgba(20, 55, 94, 0.18)',
+          accentSoft: '#E6F5EE',
+          accentMedium: 'rgba(27, 138, 90, 0.18)',
         },
         whiteAlpha: {
           ghost: 'rgba(255, 255, 255, 0.10)',
@@ -33,37 +52,38 @@ module.exports = {
           ghost: 'rgba(0, 0, 0, 0.05)',
         },
         stateAlpha: {
-          errorSoft: 'rgba(239, 68, 68, 0.08)',
-          warningSoft: 'rgba(245, 158, 11, 0.18)',
+          successSoft: '#E6F5EE',
+          errorSoft: '#FFF0EF',
+          warningSoft: '#FFF8ED',
         },
         text: {
-          primary: '#18181B',
-          secondary: '#71717A',
-          muted: '#A1A1AA',
+          primary: '#0A2540',
+          secondary: '#3A3F47',
+          muted: '#6B7280',
           onPrimary: '#FFFFFF',
-          onAccent: '#18181B',
+          onAccent: '#FFFFFF',
         },
         surface: {
           background: '#FFFFFF',
-          secondary: '#F4F4F5',
-          elevated: '#FAFAFA',
-          border: '#E5E7EB',
-          divider: '#D1D5DB',
-          canvas: '#F9FAFB',
+          secondary: '#F7F8FA',
+          elevated: '#F8FAFE',
+          border: '#E8EBF0',
+          divider: '#E8EBF0',
+          canvas: '#F2F5F9',
         },
         state: {
-          success: '#84CC16',
-          warning: '#F59E0B',
-          error: '#EF4444',
-          info: '#1E3A8A',
+          success: '#1B8A5A',
+          warning: '#C77700',
+          error: '#C0362C',
+          info: '#1E5C9B',
         },
         avatars: {
-          1: '#2563EB',
-          2: '#7C3AED',
-          3: '#0891B2',
-          4: '#BE185D',
-          5: '#059669',
-          6: '#D97706',
+          1: '#14375E',
+          2: '#1E5C9B',
+          3: '#3A85C9',
+          4: '#1B8A5A',
+          5: '#C77700',
+          6: '#B7921A',
         },
       },
     },
