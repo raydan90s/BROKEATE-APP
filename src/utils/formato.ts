@@ -60,6 +60,18 @@ export function fechaHora(iso: string | null | undefined): string {
   }-${fecha.getFullYear()} · ${hh}:${mm}`;
 }
 
+/**
+ * "2026-07-11T14:03:22Z" → "11-jul-2026 · 14:03:22". Con segundos: en el detalle de un
+ * evento auditado, dos decisiones del mismo minuto tienen que poder distinguirse.
+ */
+export function fechaHoraLarga(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  const fecha = new Date(iso);
+  if (Number.isNaN(fecha.getTime())) return iso;
+  const ss = String(fecha.getSeconds()).padStart(2, '0');
+  return `${fechaHora(iso)}:${ss}`;
+}
+
 /** 360 → "360 días" · null → "Sin plazo fijo" (los fondos no tienen plazo). */
 export function plazo(dias: number | null | undefined): string {
   return dias == null ? 'Sin plazo fijo' : `${dias} días`;

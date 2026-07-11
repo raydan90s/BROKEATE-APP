@@ -99,14 +99,12 @@ export default function SimuladorPage() {
               <TouchableOpacity
                 key={m}
                 onPress={() => setMontoTexto(String(m))}
-                className={`rounded-xl px-3 py-2 ${
-                  monto === m ? 'bg-brand-primary' : 'bg-brandAlpha-primarySoft'
-                }`}
+                className={`rounded-xl px-3 py-2 ${monto === m ? 'bg-brand-primary' : 'bg-brandAlpha-primarySoft'
+                  }`}
               >
                 <Text
-                  className={`text-caption font-bold ${
-                    monto === m ? 'text-text-onPrimary' : 'text-brand-mid'
-                  }`}
+                  className={`text-caption font-bold ${monto === m ? 'text-text-onPrimary' : 'text-brand-mid'
+                    }`}
                 >
                   {usd(m)}
                 </Text>
@@ -123,14 +121,12 @@ export default function SimuladorPage() {
               <TouchableOpacity
                 key={p.dias}
                 onPress={() => setPlazo(p.dias)}
-                className={`flex-1 items-center rounded-xl py-2.5 ${
-                  plazo === p.dias ? 'bg-brand-primary' : 'bg-brandAlpha-primarySoft'
-                }`}
+                className={`flex-1 items-center rounded-xl py-2.5 ${plazo === p.dias ? 'bg-brand-primary' : 'bg-brandAlpha-primarySoft'
+                  }`}
               >
                 <Text
-                  className={`text-body font-semibold ${
-                    plazo === p.dias ? 'text-text-onPrimary' : 'text-brand-mid'
-                  }`}
+                  className={`text-body font-semibold ${plazo === p.dias ? 'text-text-onPrimary' : 'text-brand-mid'
+                    }`}
                 >
                   {p.etiqueta}
                 </Text>
@@ -153,7 +149,7 @@ export default function SimuladorPage() {
             {mejor ? (
               <View className="overflow-hidden rounded-2xl border-2 border-brand-primary">
                 <View className="bg-brand-primary px-4 py-2.5">
-                  <Text className="text-caption font-bold tracking-widest text-whiteAlpha-medium">
+                  <Text className="text-caption font-bold tracking-widest text-white">
                     MEJOR OPCIÓN ELEGIBLE · {mejor.producto.toUpperCase()}
                   </Text>
                 </View>
@@ -241,9 +237,8 @@ function FilaSimulada({ tasa }: { tasa: TasaInstrumento }) {
 
   return (
     <View
-      className={`flex-row items-center gap-3 border-t border-surface-border p-4 ${
-        bloqueada ? 'opacity-60' : ''
-      }`}
+      className={`flex-row items-center gap-3 border-t border-surface-border p-4 ${bloqueada ? 'opacity-60' : ''
+        }`}
     >
       <View className="flex-1">
         <Text className="text-body font-bold text-text-primary" numberOfLines={1}>
@@ -256,9 +251,8 @@ function FilaSimulada({ tasa }: { tasa: TasaInstrumento }) {
       </View>
       <View className="items-end">
         <Text
-          className={`text-body-md font-bold ${
-            bloqueada ? 'text-text-muted' : 'text-brand-primary'
-          }`}
+          className={`text-body-md font-bold ${bloqueada ? 'text-text-muted' : 'text-brand-primary'
+            }`}
         >
           {usd(tasa.monto_final)}
         </Text>
