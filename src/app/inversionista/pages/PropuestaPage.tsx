@@ -5,6 +5,7 @@ import { useCallback, useEffect, useState } from 'react';
 import { ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import AgenteFab from '@/app/agente/components/AgenteFab';
 import Calificacion from '@/components/shared/Calificacion';
 import DisclaimerBanner from '@/components/shared/DisclaimerBanner';
 import EstadoBadge from '@/components/shared/EstadoBadge';
@@ -212,6 +213,9 @@ export default function PropuestaPage({ navigation }: Props) {
 
         <View className="h-4" />
       </ScrollView>
+
+      {/* El asistente flota sobre la propuesta y conversa sobre ESTA sesión. */}
+      <AgenteFab sessionId={propuesta.session_id} />
     </SafeAreaView>
   );
 }
