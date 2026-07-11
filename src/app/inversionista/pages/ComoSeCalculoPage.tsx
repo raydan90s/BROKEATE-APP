@@ -172,7 +172,7 @@ export default function ComoSeCalculoPage() {
         {datos.regla_institucion ? (
           <View className="gap-2 rounded-2xl border border-surface-border bg-surface-background p-5">
             <View className="flex-row items-center gap-2">
-              <Ionicons name="shield-checkmark-outline" size={16} color="#1E3A8A" />
+              <Ionicons name="shield-checkmark-outline" size={16} color="#14375E" />
               <Text className="text-caption font-bold uppercase text-text-secondary">
                 Solidez del emisor
               </Text>

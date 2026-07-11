@@ -8,9 +8,11 @@ import ColaRevisionPage from '@/app/asesor/pages/ColaRevisionPage';
 import DetallePropuestaPage from '@/app/asesor/pages/DetallePropuestaPage';
 import LoginPage from '@/app/auth/pages/LoginPage';
 import ComoSeCalculoPage from '@/app/inversionista/pages/ComoSeCalculoPage';
+import ComparadorPage from '@/app/inversionista/pages/ComparadorPage';
 import CuestionarioPage from '@/app/inversionista/pages/CuestionarioPage';
 import InicioPage from '@/app/inversionista/pages/InicioPage';
 import PropuestaPage from '@/app/inversionista/pages/PropuestaPage';
+import SimuladorPage from '@/app/inversionista/pages/SimuladorPage';
 import { useAuth } from '@/context/AuthContext';
 import type {
   AdvisorStackParamList,
@@ -47,6 +49,8 @@ function InvestorStack() {
       <Investor.Screen name="Cuestionario" component={CuestionarioPage} />
       <Investor.Screen name="Propuesta" component={PropuestaPage} />
       <Investor.Screen name="ComoSeCalculo" component={ComoSeCalculoPage} />
+      <Investor.Screen name="Comparador" component={ComparadorPage} />
+      <Investor.Screen name="Simulador" component={SimuladorPage} />
     </Investor.Navigator>
   );
 }
@@ -58,7 +62,7 @@ function AdvisorTabs() {
     <AdvisorTab.Navigator
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#1E3A8A',
+        tabBarActiveTintColor: '#14375E',
         tabBarInactiveTintColor: '#A1A1AA',
       }}
     >
@@ -110,7 +114,7 @@ export default function RootNavigator() {
   if (isLoading) {
     return (
       <View className="flex-1 items-center justify-center bg-surface-background">
-        <ActivityIndicator size="large" color="#1E3A8A" />
+        <ActivityIndicator size="large" color="#14375E" />
       </View>
     );
   }

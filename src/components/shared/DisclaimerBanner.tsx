@@ -10,7 +10,7 @@ import { Text, View } from 'react-native';
 export default function DisclaimerBanner() {
   return (
     <View className="flex-row gap-3 rounded-2xl bg-stateAlpha-warningSoft p-4">
-      <Ionicons name="information-circle" size={20} color="#B45309" />
+      <Ionicons name="information-circle" size={20} color="#C77700" />
       <Text className="flex-1 text-caption leading-4 text-text-primary">
         Esta es una <Text className="font-bold">propuesta referencial</Text> sujeta a la
         revisión de un asesor. No constituye una orden de inversión, no se ejecuta

@@ -26,6 +26,9 @@ export type InvestorStackParamList = {
   /** Lee la propuesta del usuario del token: no recibe un id que se pueda falsear. */
   Propuesta: undefined;
   ComoSeCalculo: ComoSeCalculoParams;
+  /** Con `monto` (p. ej. desde una propuesta) las tasas llegan con interés calculado. */
+  Comparador: { monto?: number } | undefined;
+  Simulador: undefined;
 };
 
 /** Las dos listas del asesor: independientes entre sí, por eso son tabs. */
