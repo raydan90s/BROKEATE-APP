@@ -170,7 +170,7 @@ export default function PropuestaPage({ navigation }: Props) {
         {propuesta.explicacion ? (
           <View className="gap-2 rounded-2xl bg-brandAlpha-primarySoft p-5">
             <View className="flex-row items-center gap-2">
-              <Ionicons name="sparkles" size={16} color="#1E3A8A" />
+              <Ionicons name="sparkles" size={16} color="#14375E" />
               <Text className="text-caption font-bold uppercase text-brand-primary">
                 Por qué esta propuesta
               </Text>
@@ -207,7 +207,7 @@ export default function PropuestaPage({ navigation }: Props) {
               Respuesta por respuesta, con las reglas a la vista.
             </Text>
           </View>
-          <Ionicons name="chevron-forward" size={20} color="#1E3A8A" />
+          <Ionicons name="chevron-forward" size={20} color="#14375E" />
         </TouchableOpacity>
 
         <View className="h-4" />

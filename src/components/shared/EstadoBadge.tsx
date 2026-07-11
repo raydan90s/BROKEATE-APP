@@ -11,8 +11,8 @@ const ESTADOS: Record<EstadoPropuesta, { texto: string; fondo: string; letra: st
   },
   approved: {
     texto: 'Aprobada',
-    fondo: 'bg-brandAlpha-accentSoft',
-    letra: 'text-text-primary',
+    fondo: 'bg-stateAlpha-successSoft',
+    letra: 'text-state-success',
   },
   edited: {
     texto: 'Editada por el asesor',

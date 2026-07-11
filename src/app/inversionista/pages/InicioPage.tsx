@@ -137,7 +137,7 @@ export default function InicioPage({ navigation }: Props) {
                 <Text className="text-body-md font-bold text-brand-primary">
                   ¿Cómo se calculó mi perfil?
                 </Text>
-                <Ionicons name="chevron-forward" size={20} color="#1E3A8A" />
+                <Ionicons name="chevron-forward" size={20} color="#14375E" />
               </TouchableOpacity>
 
               <TouchableOpacity

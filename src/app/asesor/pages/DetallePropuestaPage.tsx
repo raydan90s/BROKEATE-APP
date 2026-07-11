@@ -193,7 +193,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
               <Text className="text-body font-bold text-brand-primary">
                 Ver cómo se calculó su perfil
               </Text>
-              <Ionicons name="chevron-forward" size={18} color="#1E3A8A" />
+              <Ionicons name="chevron-forward" size={18} color="#14375E" />
             </TouchableOpacity>
           </View>
 
@@ -202,7 +202,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
           {detalle.banderas.length > 0 ? (
             <View className="gap-2 rounded-2xl bg-stateAlpha-warningSoft p-5">
               <View className="flex-row items-center gap-2">
-                <Ionicons name="flag" size={16} color="#B45309" />
+                <Ionicons name="flag" size={16} color="#C77700" />
                 <Text className="text-caption font-bold uppercase text-text-primary">
                   Puntos de atención
                 </Text>
@@ -301,7 +301,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
           {detalle.explicacion ? (
             <View className="gap-2 rounded-2xl bg-brandAlpha-primarySoft p-5">
               <View className="flex-row items-center gap-2">
-                <Ionicons name="sparkles" size={16} color="#1E3A8A" />
+                <Ionicons name="sparkles" size={16} color="#14375E" />
                 <Text className="text-caption font-bold uppercase text-brand-primary">
                   Explicación que vio el cliente
                 </Text>
