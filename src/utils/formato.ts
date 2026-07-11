@@ -60,7 +60,42 @@ export function fechaHora(iso: string | null | undefined): string {
   }-${fecha.getFullYear()} · ${hh}:${mm}`;
 }
 
+/**
+ * "2026-07-11T14:03:22Z" → "11-jul-2026 · 14:03:22". Con segundos: en el detalle de un
+ * evento auditado, dos decisiones del mismo minuto tienen que poder distinguirse.
+ */
+export function fechaHoraLarga(iso: string | null | undefined): string {
+  if (!iso) return '—';
+  const fecha = new Date(iso);
+  if (Number.isNaN(fecha.getTime())) return iso;
+  const ss = String(fecha.getSeconds()).padStart(2, '0');
+  return `${fechaHora(iso)}:${ss}`;
+}
+
 /** 360 → "360 días" · null → "Sin plazo fijo" (los fondos no tienen plazo). */
 export function plazo(dias: number | null | undefined): string {
   return dias == null ? 'Sin plazo fijo' : `${dias} días`;
+}
+
+/**
+ * 12 y 15 → "12 / 15 puntos". El máximo lo sirve la BD (es el mayor `max_score` de la
+ * versión de reglas con la que se puntuó esa sesión), así que si un día cambian los
+ * puntajes esta cifra cambia sola. Si no viene, se muestra el puntaje solo: es mejor no
+ * decir el denominador que inventarlo.
+ */
+export function puntos(puntaje: number, maximo: number | null | undefined): string {
+  return maximo == null ? `${puntaje} puntos` : `${puntaje} / ${maximo} puntos`;
+}
+
+/**
+ * "20.000" o "20000" → 20000. El usuario escribe con separadores ecuatorianos y la API
+ * espera un número; esto es lectura de un input, no aritmética de negocio.
+ */
+export function montoANumero(texto: string): number {
+  const limpio = texto
+    .replace(/[^\d,.]/g, '')
+    .replace(/\./g, '')
+    .replace(',', '.');
+  const valor = Number(limpio);
+  return Number.isFinite(valor) ? valor : 0;
 }

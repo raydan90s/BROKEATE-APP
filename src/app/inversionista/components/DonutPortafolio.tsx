@@ -4,7 +4,7 @@ import Svg, { Circle, G } from 'react-native-svg';
 import type { AssetAllocation } from '../types/inversionista';
 
 /** Un color por línea. El orden es estable: la leyenda y el donut siempre coinciden. */
-export const COLORES = ['#1E3A8A', '#84CC16', '#0891B2', '#7C3AED', '#D97706'];
+export const COLORES = ['#0A2540', '#1E5C9B', '#3A85C9', '#9BB8D4', '#1B8A5A'];
 
 interface DonutProps {
   allocations: AssetAllocation[];

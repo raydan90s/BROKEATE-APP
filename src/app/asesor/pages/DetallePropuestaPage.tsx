@@ -14,9 +14,11 @@ import {
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import BotonAtras from '@/components/shared/BotonAtras';
 import Calificacion from '@/components/shared/Calificacion';
 import EstadoBadge from '@/components/shared/EstadoBadge';
 import { Cargando, ErrorEstado } from '@/components/shared/Estados';
+import ExplicacionIA from '@/components/shared/ExplicacionIA';
 import { ApiError } from '@/services/http';
 import type { AdvisorStackParamList } from '@/types/navigation';
 import { fechaHora, plazo, porcentaje, usd } from '@/utils/formato';
@@ -140,9 +142,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
       <StatusBar style="dark" />
 
       <View className="flex-row items-center gap-3 border-b border-surface-border px-5 py-4">
-        <TouchableOpacity onPress={navigation.goBack} activeOpacity={0.7}>
-          <Text className="text-body font-bold text-brand-primary">Atrás</Text>
-        </TouchableOpacity>
+        <BotonAtras onPress={navigation.goBack} />
         <Text className="flex-1 text-heading font-bold text-text-primary" numberOfLines={1}>
           {detalle.investor_nombre}
         </Text>
@@ -193,7 +193,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
               <Text className="text-body font-bold text-brand-primary">
                 Ver cómo se calculó su perfil
               </Text>
-              <Ionicons name="chevron-forward" size={18} color="#1E3A8A" />
+              <Ionicons name="chevron-forward" size={18} color="#14375E" />
             </TouchableOpacity>
           </View>
 
@@ -202,7 +202,7 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
           {detalle.banderas.length > 0 ? (
             <View className="gap-2 rounded-2xl bg-stateAlpha-warningSoft p-5">
               <View className="flex-row items-center gap-2">
-                <Ionicons name="flag" size={16} color="#B45309" />
+                <Ionicons name="flag" size={16} color="#C77700" />
                 <Text className="text-caption font-bold uppercase text-text-primary">
                   Puntos de atención
                 </Text>
@@ -297,19 +297,15 @@ export default function DetallePropuestaPage({ navigation, route }: Props) {
           ) : null}
 
           {/* El texto del LLM, marcado como tal: el asesor tiene que saber qué leyó su
-              cliente y quién lo escribió. */}
+              cliente y quién lo escribió. Se muestra resumido, pero al expandir aparece
+              íntegro —disclaimer incluido—: acá no se audita un resumen nuestro, se audita
+              el texto que el cliente tuvo delante. */}
           {detalle.explicacion ? (
-            <View className="gap-2 rounded-2xl bg-brandAlpha-primarySoft p-5">
-              <View className="flex-row items-center gap-2">
-                <Ionicons name="sparkles" size={16} color="#1E3A8A" />
-                <Text className="text-caption font-bold uppercase text-brand-primary">
-                  Explicación que vio el cliente
-                </Text>
-              </View>
-              <Text className="text-body leading-5 text-text-primary">
-                {detalle.explicacion}
-              </Text>
-            </View>
+            <ExplicacionIA
+              texto={detalle.explicacion}
+              titulo="Explicación que vio el cliente"
+              conservarDisclaimer
+            />
           ) : null}
 
           {/* Historial: fecha · versión de reglas · responsable. El criterio de la HU3. */}
