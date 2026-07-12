@@ -43,3 +43,6 @@ example
 /android
 .vercel
 .env*
+
+# documentación interna: fuera del repo por decisión del equipo
+docs/
