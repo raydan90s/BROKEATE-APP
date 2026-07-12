@@ -114,3 +114,123 @@ uvicorn src.main:app --reload --host 0.0.0.0
 2. Para ver la elegibilidad bloqueando: perfilarse como conservador
    (`inversionista@demo.ec` / `demo1234`, respuestas cautas) → Banco Loja y VisionFund
    salen en gris con la regla.
+
+---
+
+# Parte de Miguel — Subcuentas, despliegue y mercados externos (Alpha Vantage)
+
+**Reparto:** infraestructura de despliegue (Render + Vercel) · motor de subcuentas
+(implementación original, luego unificada con la de Erick) · integración de Alpha
+Vantage (wrapper cacheado + Rutas B/C del agente + ticker + diferenciación del chat).
+Estado: **completo y verificado** (58 tests del backend en verde, endpoints probados
+en vivo contra Alpha Vantage real, flujo de chat verificado de punta a punta con
+Playwright).
+
+## 1. Despliegue
+
+- **Backend → Render** (`https://roboadvisory-backend.onrender.com`): blueprint en
+  `render.yaml` del backend (`ROBOADVISORY-BACKEND`), creado vía API de Render sobre
+  la rama `MiguelsBackend` con `autoDeploy: yes`. `/health` hace un `select 1` real
+  contra Supabase.
+- **Frontend → Vercel** (`https://roboadvisorapp.vercel.app`): `vercel.json` define
+  el build (`expo export -p web`) y el output (`dist`). Desplegado por CLI (el
+  proyecto vive en una cuenta de Vercel distinta a la del owner del repo de GitHub,
+  así que el auto-deploy por push no está conectado — hay que correr
+  `vercel deploy --prod` de nuevo tras cambios en `MiguelApp`).
+- Las variables de entorno secretas del backend (`DATABASE_URL`, `JWT_SECRET`,
+  `GEMINI_API_KEY`, `ALPHA_VANTAGE_API_KEY`, `CORS_ORIGINS`) están seteadas en Render;
+  el front toma la URL del backend de `EXPO_PUBLIC_API_BASE_URL` en tiempo de build.
+
+## 2. Motor de subcuentas (backend)
+
+Implementación original: `profiles.total_capital` +
+`profiling_sessions.subaccount_name` (migración `002_subcuentas.sql`), con la regla
+*"una subcuenta no puede superar el capital sin asignar"* aplicada **en un trigger de
+Postgres** (`fn_valida_capital_subcuenta`), no en Python — bloquea la fila de
+`profiles` con `for update` para que dos subcuentas creadas a la vez para el mismo
+cliente se serialicen en la base en vez de colarse las dos por una condición de
+carrera. Esta migración sigue siendo la base del sistema actual (Erick la extendió
+del lado de los modelos/endpoints, sin tocar el trigger ni la migración).
+
+Cubierto por `tests/test_subcuentas.py`: USD 40.000 repartidos en 20k/10k/10k caben
+exactos; una cuarta subcuenta de USD 1 devuelve 422.
+
+## 3. Alpha Vantage: wrapper cacheado (`ROBOADVISORY-BACKEND/src/services/market_data.py`)
+
+`GET /api/market/quotes?symbols=...` — nuevo router (`market_routes.py` /
+`market_controller.py` / `models/market.py`), registrado en `main.py`.
+
+- **`cachetools.TTLCache` de 1 hora.** La cuota gratuita de Alpha Vantage es de 25
+  requests/día; sin caché, el ticker (refrescando cada ~45s) y cada turno de chat de
+  mercados la agotarían en los primeros minutos de la demo.
+- **Respaldo simulado**: si Alpha Vantage responde `Note` / `Information` /
+  `Error Message` (rate limit, o un símbolo que el free tier no sirve — es el caso
+  conocido de `JPN225`) o la llamada falla, se sirve una cotización de referencia
+  fija con `source: "mock"`. Probado en vivo: al pedir los 5 símbolos en frío, 2-3
+  salen de Alpha Vantage real y el resto cae al mock por el límite de 1 req/seg del
+  free tier — el ticker nunca se queda en blanco.
+- Cubre `BTCUSD`, `XAUUSD`, `JPN225`, `SPY`, `EURUSD` (`CURRENCY_EXCHANGE_RATE` para
+  forex/cripto/oro, `GLOBAL_QUOTE` para `SPY`).
+
+## 4. Agente conversacional: de 2 a 3 rutas + mercados (`services/agent_graph.py`)
+
+El grafo que ya existía (router → qa → guardrail → refuse/fallback, obra de Erick)
+solo tenía dos caminos: datos del banco, o rechazo — y el rechazo incluía de plano
+cualquier mención a bitcoin, forex, acciones, etc. Se extendió a 3 rutas:
+
+```
+entrada → router ─┬─(A: bancario)→ qa ──────┐
+                   ├─(B: mixto)  → mixto ────┤
+                   ├─(C: externo)→ mercado ──┼→ guardrail ─┬─(ok)──────────→ FIN
+                   │                         │             ├─(falla,1 vez)→ (misma ruta)
+                   └─(fuera de alcance)───────────────────→│             └─(reincide)───→ fallback → FIN
+                                                            (refuse) ──────────────────────────────→ FIN
+```
+
+- **Ruta A (bancario):** sin cambios — solo los datos del inversionista.
+- **Ruta B (mixto):** datos del banco + cotizaciones de Alpha Vantage, para
+  preguntas que comparan ("¿cómo se compara mi depósito con el bitcoin?").
+- **Ruta C (externo):** 100% Alpha Vantage. El `ContextoPermitido` de esta ruta es
+  **cero** contexto del banco — verificado en vivo: cuando el modelo intentó
+  mencionar un "depósito a plazo fijo" respondiendo una pregunta 100% externa, el
+  guardarraíl lo rechazó dos veces seguidas y cayó a la cotización determinista;
+  nunca se le mostró al usuario.
+- **Rechazo:** predicciones de mercado ("¿va a subir el bitcoin?"), órdenes de
+  compra/venta y tareas ajenas siguen bloqueadas en las tres rutas — dar una
+  cotización actual no es lo mismo que predecirla.
+
+**Contención (regla explícita del reto):** B y C nunca insertan en `proposals` ni
+`proposal_items` — solo leen y devuelven texto. La única escritura es el historial
+de chat (`llm_interactions`), igual que la Ruta A. El disclaimer *"simulación
+educativa... NO están en el catálogo del banco"* es obligatorio en B y C: va en el
+prompt, y si el modelo no lo escribe se anexa igual antes de responder.
+`AgentChatResponse` ahora expone `ruta` para que el front sepa cuál fue.
+
+## 5. Frontend: ticker + diferenciación del chat
+
+- **`MarketTicker.tsx`** (`src/app/inversionista/components/`): barra horizontal
+  deslizable en el home de subcuentas (`MisSubcuentasPage`, `initialRouteName` del
+  stack del inversionista), de borde a borde de la pantalla. Cada tarjeta: símbolo,
+  precio (formato adaptado a la magnitud — 4 decimales para forex, 0 para BTC/Nikkei),
+  variación % con flecha y color verde/rojo, y un punto verde/gris que marca si el
+  dato es en vivo o simulado. Refresco cada 45s (no gasta cuota extra: relee el
+  caché del backend).
+- **`Burbuja.tsx`**: las respuestas de Ruta B/C se pintan con borde ámbar y un
+  banner *"SIMULACIÓN EDUCATIVA · FUERA DEL BANCO"* antes del texto — el mismo
+  lenguaje visual (`state-warning` / `stateAlpha-warningSoft`) que ya usaba el resto
+  de la app para advertencias.
+- **`SourceChips.tsx`**: reconoce la fuente `alpha_vantage` y la rotula "Alpha
+  Vantage (mercado externo, no es del banco)", con el chip en el mismo ámbar.
+
+Verificado de punta a punta con Playwright contra el backend real: preguntar
+"¿Cómo está el bitcoin hoy?" desde el chat produce una burbuja ámbar con el aviso,
+la cotización real de Alpha Vantage citada por el modelo (`USD 63.863,90`), y el
+chip `BTCUSD · USD 63.863,90 · Alpha Vantage`.
+
+## 6. Deuda conocida (no atribuible a este reparto)
+
+El front llama a `POST /api/agent/simulador` y
+`PUT /api/investor/proposals/{id}/allocation`, que **no existen** en el backend
+actual — quedaron en trabajo de otra rama sin mergear. El Comparador/Simulador del
+front fallará hasta que se implementen; queda fuera del alcance de esta parte
+(Alpha Vantage no los toca ni los necesita).
