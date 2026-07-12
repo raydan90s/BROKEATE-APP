@@ -21,7 +21,7 @@ import { useAuth } from '@/context/AuthContext';
 import HomeHeader from '@/screens/inicio/home/components/HomeHeader';
 import { ApiError } from '@/services/http';
 import type { InvestorStackParamList } from '@/types/navigation';
-import { montoANumero } from '@/utils/formato';
+import { montoANumero, montoConSeparadores } from '@/utils/formato';
 
 import BarraCapital from '../components/BarraCapital';
 import TarjetaSubcuenta from '../components/TarjetaSubcuenta';
@@ -81,7 +81,7 @@ function EditorCapital({
     <View className="gap-2">
       <TextInput
         value={texto}
-        onChangeText={setTexto}
+        onChangeText={(nuevo) => setTexto(montoConSeparadores(nuevo))}
         placeholder="40.000"
         placeholderTextColor="#A1A1AA"
         keyboardType="numeric"
