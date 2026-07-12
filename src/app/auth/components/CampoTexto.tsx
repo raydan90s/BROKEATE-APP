@@ -2,7 +2,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useState } from 'react';
 import { Text, TextInput, TouchableOpacity, View, type TextInputProps } from 'react-native';
 
-import { COLORES } from '@/constants/colores';
+import { useColores } from '@/context/ThemeContext';
 
 interface CampoTextoProps extends TextInputProps {
   etiqueta: string;
@@ -32,6 +32,7 @@ export default function CampoTexto({
   editable = true,
   ...resto
 }: CampoTextoProps) {
+  const colores = useColores();
   const [enfocado, setEnfocado] = useState(false);
   const [verTexto, setVerTexto] = useState(false);
 
@@ -51,7 +52,7 @@ export default function CampoTexto({
         <Ionicons
           name={icono}
           size={20}
-          color={enfocado ? COLORES.primario : COLORES.textoMuted}
+          color={enfocado ? colores.primario : colores.textoMuted}
         />
         <TextInput
           {...resto}
@@ -59,7 +60,7 @@ export default function CampoTexto({
           onFocus={() => setEnfocado(true)}
           onBlur={() => setEnfocado(false)}
           secureTextEntry={esPassword && !verTexto}
-          placeholderTextColor={COLORES.textoMuted}
+          placeholderTextColor={colores.textoMuted}
           className="flex-1 py-4 text-body-md text-text-primary"
         />
         {esPassword ? (
@@ -72,7 +73,7 @@ export default function CampoTexto({
             <Ionicons
               name={verTexto ? 'eye-off-outline' : 'eye-outline'}
               size={20}
-              color={COLORES.textoSecundario}
+              color={colores.textoSecundario}
             />
           </TouchableOpacity>
         ) : null}

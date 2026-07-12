@@ -1,9 +1,12 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
+import ProviderSelector from '@/app/agente/components/ProviderSelector';
 import SourceChips from '@/app/agente/components/SourceChips';
-import type { SimuladorResponse } from '@/app/agente/services/agentApi';
-import { COLORES } from '@/constants/colores';
+import { getProviders } from '@/app/agente/services/agentApi';
+import type { ProviderInfo, SimuladorResponse } from '@/app/agente/services/agentApi';
+import { useColores } from '@/context/ThemeContext';
 
 interface Props {
   recomendacion: SimuladorResponse | null;
@@ -13,7 +16,8 @@ interface Props {
   habilitado: boolean;
   /** Qué le falta al usuario para poder pedirla. Solo se ve con `habilitado` en false. */
   pista?: string;
-  onPedir: () => void;
+  /** Pide la recomendación. `provider` = el motor de IA elegido (undefined = el default). */
+  onPedir: (provider?: string) => void;
 }
 
 /**
@@ -40,10 +44,42 @@ export default function RecomendacionIA({
   pista,
   onPedir,
 }: Props) {
+  const colores = useColores();
+  // El motor de IA con el que se (re)genera esta recomendación. Mismo patrón que el
+  // selector del chat: se puede correr la MISMA recomendación con otro motor.
+  const [providers, setProviders] = useState<ProviderInfo[]>([]);
+  const [proveedor, setProveedor] = useState<string | null>(null);
+
+  const cargarProviders = useCallback(() => {
+    getProviders()
+      .then((lista) => {
+        setProviders(lista);
+        setProveedor((actual) => {
+          if (actual && lista.some((p) => p.id === actual && p.disponible)) return actual;
+          const def =
+            lista.find((p) => p.es_default && p.disponible) ?? lista.find((p) => p.disponible);
+          return def?.id ?? null;
+        });
+      })
+      .catch(() => {
+        /* si falla, el combo no aparece y se usa el default del backend */
+      });
+  }, []);
+
+  useEffect(() => {
+    cargarProviders();
+  }, [cargarProviders]);
+
+  // Cambiar de motor RE-EJECUTA la misma recomendación con ese motor (los datos no cambian).
+  const cambiarMotor = (id: string) => {
+    setProveedor(id);
+    onPedir(id);
+  };
+
   if (cargando) {
     return (
       <View className="flex-row items-center gap-3 rounded-2xl bg-brandAlpha-primarySoft p-5">
-        <ActivityIndicator color={COLORES.primario} />
+        <ActivityIndicator color={colores.primario} />
         <Text className="text-body text-text-secondary">
           Analizando las opciones del catálogo…
         </Text>
@@ -55,7 +91,7 @@ export default function RecomendacionIA({
     return (
       <View className="gap-3 rounded-2xl bg-brandAlpha-primarySoft p-5">
         <View className="flex-row items-center gap-2">
-          <Ionicons name="sparkles" size={16} color={COLORES.primario} />
+          <Ionicons name="sparkles" size={16} color={colores.primario} />
           <Text className="text-caption font-bold uppercase text-brand-primary">
             Recomendación con IA
           </Text>
@@ -74,7 +110,7 @@ export default function RecomendacionIA({
         ) : null}
 
         <TouchableOpacity
-          onPress={onPedir}
+          onPress={() => onPedir(proveedor ?? undefined)}
           disabled={!habilitado}
           activeOpacity={0.85}
           accessibilityRole="button"
@@ -85,7 +121,7 @@ export default function RecomendacionIA({
           <Ionicons
             name="sparkles"
             size={15}
-            color={habilitado ? '#FFFFFF' : COLORES.textoMuted}
+            color={habilitado ? colores.textoSobrePrimario : colores.textoMuted}
           />
           <Text
             className={`text-body font-bold ${
@@ -105,25 +141,34 @@ export default function RecomendacionIA({
   }
 
   // La plantilla determinista es una respuesta legítima (el proveedor de IA puede estar
-  // caído o haber alucinado dos veces), pero el usuario merece saber que la escribió el
-  // motor y no el modelo. No se disfraza.
+  // caído o haber alucinado dos veces): se avisa que la escribió el motor, sin nombrar el
+  // modelo — qué proveedor contestó no se muestra por turno (se elige en el selector).
   const esPlantilla = recomendacion.modelo === 'plantilla-determinista';
   const parrafos = recomendacion.texto.split('\n').filter((l) => l.trim().length > 0);
 
   return (
     <View className="gap-3 rounded-2xl bg-brandAlpha-primarySoft p-5">
-      <View className="flex-row items-center gap-2">
-        <Ionicons name="sparkles" size={16} color={COLORES.primario} />
+      <View className="flex-row flex-wrap items-center gap-2">
+        <Ionicons name="sparkles" size={16} color={colores.primario} />
         <Text className="flex-1 text-caption font-bold uppercase text-brand-primary">
           Recomendación con IA
         </Text>
+        {/* Combo de motor: correr la MISMA recomendación con otro modelo de IA. */}
+        {providers.length ? (
+          <ProviderSelector
+            providers={providers}
+            value={proveedor}
+            onChange={cambiarMotor}
+            onOpen={cargarProviders}
+          />
+        ) : null}
         <TouchableOpacity
-          onPress={onPedir}
+          onPress={() => onPedir(proveedor ?? undefined)}
           activeOpacity={0.7}
           accessibilityRole="button"
           className="flex-row items-center gap-1"
         >
-          <Ionicons name="refresh" size={13} color={COLORES.primario} />
+          <Ionicons name="refresh" size={13} color={colores.primario} />
           <Text className="text-caption font-bold text-brand-primary">Otra vez</Text>
         </TouchableOpacity>
       </View>
@@ -140,13 +185,13 @@ export default function RecomendacionIA({
         <Ionicons
           name={recomendacion.guardrail_passed ? 'shield-checkmark' : 'alert-circle'}
           size={12}
-          color={recomendacion.guardrail_passed ? COLORES.exito : COLORES.advertencia}
+          color={recomendacion.guardrail_passed ? colores.exito : colores.advertencia}
         />
         <Text className="flex-1 text-caption text-text-muted">
           {recomendacion.guardrail_passed
             ? 'Cada cifra citada existe en el catálogo: el validador del banco revisó el texto.'
             : 'El texto no pasó el validador del banco.'}
-          {esPlantilla ? ' Lo escribió el motor, no el modelo.' : ` · ${recomendacion.modelo}`}
+          {esPlantilla ? ' Lo escribió el motor, no el modelo.' : ''}
         </Text>
       </View>
     </View>

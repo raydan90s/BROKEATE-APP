@@ -2,6 +2,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useRef } from 'react';
 import { Animated, Text, View } from 'react-native';
 
+import { useColores } from '@/context/ThemeContext';
+
 import type { SourceChip } from '../services/agentApi';
 import SourceChips from './SourceChips';
 
@@ -23,14 +25,6 @@ export interface Mensaje {
   pending?: boolean;
   /** La respuesta fue un error de red/servidor, no del agente. */
   error?: boolean;
-}
-
-// Etiqueta legible del modelo que contestó. Es la prueba visible de qué proveedor
-// respondió cada turno.
-function etiquetaModelo(modelo: string): string | null {
-  if (modelo === 'refuse') return null; // rechazo por alcance: no viene de un modelo
-  if (modelo === 'plantilla-determinista') return 'plantilla (sin IA)';
-  return modelo;
 }
 
 /** true si la ruta cita mercados externos (Alpha Vantage), simulados y fuera del banco. */
@@ -72,15 +66,18 @@ function TypingDots() {
 
 /** Avatar del asistente: cuadrito con brillo, en el azul de marca. */
 function AvatarAsistente() {
+  const colores = useColores();
+
   return (
     <View className="h-8 w-8 items-center justify-center rounded-xl bg-brandAlpha-primarySoft">
-      <Ionicons name="sparkles" size={15} color="#1E3A8A" />
+      <Ionicons name="sparkles" size={15} color={colores.primario} />
     </View>
   );
 }
 
 export default function Burbuja({ mensaje }: { mensaje: Mensaje }) {
   const esUsuario = mensaje.role === 'user';
+  const colores = useColores();
 
   if (esUsuario) {
     return (
@@ -115,7 +112,7 @@ export default function Burbuja({ mensaje }: { mensaje: Mensaje }) {
                   catálogo del banco. Va ANTES del texto para que no pase inadvertido. */}
               {externa ? (
                 <View className="mb-1.5 flex-row items-center gap-1.5">
-                  <Ionicons name="alert-circle" size={13} color="#C77700" />
+                  <Ionicons name="alert-circle" size={13} color={colores.advertencia} />
                   <Text className="text-caption font-bold uppercase text-state-warning">
                     Simulación educativa · fuera del banco
                   </Text>
@@ -129,16 +126,6 @@ export default function Burbuja({ mensaje }: { mensaje: Mensaje }) {
             </>
           )}
         </View>
-
-        {/* Prueba de qué modelo contestó este turno. */}
-        {!mensaje.pending && mensaje.modelo && etiquetaModelo(mensaje.modelo) ? (
-          <View className="mt-1 flex-row items-center gap-1">
-            <Ionicons name="hardware-chip-outline" size={10} color="#A1A1AA" />
-            <Text className="text-caption text-text-muted">
-              vía {etiquetaModelo(mensaje.modelo)}
-            </Text>
-          </View>
-        ) : null}
 
         {mensaje.sources?.length ? <SourceChips sources={mensaje.sources} /> : null}
       </View>

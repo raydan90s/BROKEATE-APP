@@ -1,5 +1,4 @@
 import { useNavigation } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import type { ReactNode } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, Text, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -31,7 +30,6 @@ export default function PantallaAuth({
 
   return (
     <SafeAreaView className="flex-1 bg-surface-background">
-      <StatusBar style="dark" />
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}

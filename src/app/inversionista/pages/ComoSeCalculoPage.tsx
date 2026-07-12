@@ -1,15 +1,14 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation, useRoute } from '@react-navigation/native';
 import type { RouteProp } from '@react-navigation/native';
-import { StatusBar } from 'expo-status-bar';
 import { useCallback, useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, Text, TouchableOpacity, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import BotonAtras from '@/components/shared/BotonAtras';
 import { Cargando, ErrorEstado } from '@/components/shared/Estados';
-import { COLORES } from '@/constants/colores';
 import { useAuth } from '@/context/AuthContext';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { ComoSeCalculoParams } from '@/types/navigation';
 import { usd } from '@/utils/formato';
@@ -41,6 +40,7 @@ export default function ComoSeCalculoPage() {
   const navigation = useNavigation();
   const route = useRoute<Ruta>();
   const { user } = useAuth();
+  const colores = useColores();
 
   const sessionId = route.params?.sessionId;
   // Sin `investorId` en los params, la pantalla es la del propio usuario. El asesor sí
@@ -138,8 +138,6 @@ export default function ComoSeCalculoPage() {
 
   return (
     <SafeAreaView className="flex-1 bg-surface-background">
-      <StatusBar style="dark" />
-
       <View className="flex-row items-center gap-3 border-b border-surface-border px-5 py-4">
         <BotonAtras onPress={navigation.goBack} />
         <Text className="flex-1 text-heading font-bold text-text-primary">
@@ -166,7 +164,7 @@ export default function ComoSeCalculoPage() {
               activeOpacity={0.7}
               className="flex-row items-center gap-1"
             >
-              <Ionicons name="create-outline" size={18} color={COLORES.primario} />
+              <Ionicons name="create-outline" size={18} color={colores.primario} />
               <Text className="text-body font-bold text-brand-primary">Editar</Text>
             </TouchableOpacity>
           )
@@ -204,7 +202,7 @@ export default function ComoSeCalculoPage() {
             porque es la consecuencia de lo que acaba de hacer. */}
         {reenviado && !editando ? (
           <View className="flex-row items-start gap-3 rounded-2xl bg-stateAlpha-successSoft px-5 py-4">
-            <Ionicons name="checkmark-circle" size={20} color={COLORES.exito} />
+            <Ionicons name="checkmark-circle" size={20} color={colores.exito} />
             <Text className="flex-1 text-body leading-5 text-text-primary">
               Tu perfil quedó actualizado y tu propuesta se regeneró con él. Un asesor la
               revisará de nuevo: vuelve a estar pendiente de revisión.
@@ -215,7 +213,7 @@ export default function ComoSeCalculoPage() {
         {editando ? (
           <>
             <View className="flex-row items-start gap-3 rounded-2xl bg-brandAlpha-primarySoft px-5 py-4">
-              <Ionicons name="information-circle" size={20} color={COLORES.primario} />
+              <Ionicons name="information-circle" size={20} color={colores.primario} />
               <Text className="flex-1 text-body leading-5 text-text-primary">
                 Al guardar se recalcula tu puntaje y tu propuesta se rearma según el perfil
                 que resulte. Vuelve a quedar pendiente de la revisión de un asesor, incluso
@@ -224,7 +222,7 @@ export default function ComoSeCalculoPage() {
             </View>
 
             {preguntas === null ? (
-              <ActivityIndicator color={COLORES.primario} />
+              <ActivityIndicator color={colores.primario} />
             ) : (
               <FormularioPreguntas
                 preguntas={preguntas}
@@ -250,7 +248,7 @@ export default function ComoSeCalculoPage() {
               }`}
             >
               {guardando ? (
-                <ActivityIndicator color="#FFFFFF" />
+                <ActivityIndicator color={colores.textoSobrePrimario} />
               ) : (
                 <Text
                   className={`text-body-md font-bold ${
@@ -361,7 +359,7 @@ export default function ComoSeCalculoPage() {
                 activeOpacity={0.85}
                 className="flex-row items-center gap-3 rounded-2xl border border-brand-primary bg-surface-background px-5 py-4"
               >
-                <Ionicons name="create-outline" size={20} color={COLORES.primario} />
+                <Ionicons name="create-outline" size={20} color={colores.primario} />
                 <View className="flex-1">
                   <Text className="text-body-md font-bold text-brand-primary">
                     Editar mis respuestas
@@ -370,7 +368,7 @@ export default function ComoSeCalculoPage() {
                     Se recalcula tu perfil y tu propuesta vuelve a revisión.
                   </Text>
                 </View>
-                <Ionicons name="chevron-forward" size={20} color={COLORES.primario} />
+                <Ionicons name="chevron-forward" size={20} color={colores.primario} />
               </TouchableOpacity>
             ) : null}
 

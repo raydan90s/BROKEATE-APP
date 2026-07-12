@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { AuthStackParamList } from '@/types/navigation';
 
@@ -27,6 +28,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'VerificarCorreo'>;
 export default function VerificarCorreoPage({ route }: Props) {
   const { email } = route.params;
   const { signIn } = useAuth();
+  const colores = useColores();
 
   const [codigo, setCodigo] = useState('');
   const [error, setError] = useState<string | null>(null);
@@ -93,7 +95,7 @@ export default function VerificarCorreoPage({ route }: Props) {
         }`}
       >
         {verificando ? (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colores.textoSobrePrimario} />
         ) : (
           <>
             <Text
@@ -106,7 +108,7 @@ export default function VerificarCorreoPage({ route }: Props) {
             <Ionicons
               name="checkmark"
               size={18}
-              color={completo ? '#FFFFFF' : '#A1A1AA'}
+              color={completo ? colores.textoSobrePrimario : colores.textoMuted}
             />
           </>
         )}

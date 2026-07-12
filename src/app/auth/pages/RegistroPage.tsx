@@ -3,7 +3,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
-import { COLORES } from '@/constants/colores';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { AuthStackParamList } from '@/types/navigation';
 
@@ -18,6 +18,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'Registro'>;
 const MIN_PASSWORD = 8;
 
 export default function RegistroPage({ navigation }: Props) {
+  const colores = useColores();
   const [nombre, setNombre] = useState('');
   const [email, setEmail] = useState('');
   const [cedula, setCedula] = useState('');
@@ -176,7 +177,7 @@ export default function RegistroPage({ navigation }: Props) {
         }`}
       >
         {enviando ? (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colores.textoSobrePrimario} />
         ) : (
           <>
             <Text
@@ -189,7 +190,7 @@ export default function RegistroPage({ navigation }: Props) {
             <Ionicons
               name="arrow-forward"
               size={18}
-              color={puedeEnviar ? '#FFFFFF' : COLORES.textoMuted}
+              color={puedeEnviar ? colores.textoSobrePrimario : colores.textoMuted}
             />
           </>
         )}
