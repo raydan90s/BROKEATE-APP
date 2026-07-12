@@ -1,7 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
-import { useNavigation } from '@react-navigation/native';
+import { useFocusEffect, useNavigation } from '@react-navigation/native';
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   ScrollView,
@@ -150,7 +150,9 @@ export default function VistaPropuesta({ sessionId, titulo = 'Tu propuesta' }: P
   const cargar = useCallback(async () => {
     if (!user) return;
     setError(null);
-    setPropuesta(null);
+    // No se borra la propuesta que ya está en pantalla: en las recargas al volver el foco
+    // eso sería un parpadeo a "Armando tu propuesta…" cada vez. El spinner es solo para
+    // la primera carga, cuando todavía no hay nada que mostrar.
     try {
       setPropuesta(await getPropuesta(user.id, sessionId));
     } catch (e) {
@@ -158,9 +160,14 @@ export default function VistaPropuesta({ sessionId, titulo = 'Tu propuesta' }: P
     }
   }, [user, sessionId]);
 
-  useEffect(() => {
-    void cargar();
-  }, [cargar]);
+  // Al foco y no solo al montar: si el cliente entró a "Cómo se calculó" y corrigió su
+  // perfil, el servidor rehizo esta propuesta. Volver atrás tiene que mostrar la nueva,
+  // no la que se cargó antes de editarla. El GET no regenera nada: lee lo guardado.
+  useFocusEffect(
+    useCallback(() => {
+      void cargar();
+    }, [cargar]),
+  );
 
   async function abrirEdicion(p: PortfolioProposal) {
     setLineas(
