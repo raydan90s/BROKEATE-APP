@@ -46,6 +46,9 @@ export type InvestorStackParamList = {
   /** Mercados EXTERNOS (Alpha Vantage): acciones, forex, cripto. Separado a propósito
    *  de `Simulador` (catálogo del banco) — no son el mismo dato ni la misma promesa. */
   Mercados: undefined;
+
+  /** Vincular el WhatsApp del cliente con su cuenta (código de un solo uso). */
+  VincularWhatsApp: undefined;
 };
 
 /** Las dos listas del asesor: independientes entre sí, por eso son tabs. */
