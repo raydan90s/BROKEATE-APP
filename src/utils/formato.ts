@@ -88,6 +88,26 @@ export function puntos(puntaje: number, maximo: number | null | undefined): stri
 }
 
 /**
+ * Lo que se pinta de vuelta en un input de monto mientras el usuario teclea:
+ * "10000" → "10.000" · "1234,5" → "1.234,5".
+ *
+ * El punto es **solo** separador de miles y la coma es el decimal (igual que en
+ * `montoANumero`, que es quien lee esto de vuelta), así que los puntos que ya venían del
+ * formateo anterior se descartan y se reagrupa desde cero en cada tecla. Se conserva la
+ * coma aunque todavía no tenga decimales detrás — si no, no habría forma de escribirlos.
+ */
+export function montoConSeparadores(texto: string): string {
+  const [entero = '', ...resto] = texto.replace(/[^\d,]/g, '').split(',');
+
+  const agrupado = entero
+    .replace(/^0+(?=\d)/, '')
+    .replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+
+  if (resto.length === 0) return agrupado;
+  return `${agrupado || '0'},${resto.join('').slice(0, 2)}`;
+}
+
+/**
  * "20.000" o "20000" → 20000. El usuario escribe con separadores ecuatorianos y la API
  * espera un número; esto es lectura de un input, no aritmética de negocio.
  */

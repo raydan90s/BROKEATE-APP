@@ -57,3 +57,35 @@ export function enviarMensaje(
 export function getProviders(): Promise<ProviderInfo[]> {
   return http.get<ProviderInfo[]>('/api/agent/providers');
 }
+
+/** La simulación sobre la que se pide consejo. Los números los recalcula el backend. */
+export interface SimuladorRequest {
+  monto: number;
+  /** Horizonte de la simulación (el plazo de los depósitos es el suyo propio). */
+  plazo_dias?: number;
+  /** El producto que el usuario eligió al cambiar de banco o de fondo. */
+  seleccion_code?: string;
+  provider?: string;
+}
+
+export interface SimuladorResponse {
+  /** El `code` que eligió el MOTOR (no el LLM): es el que el simulador destaca. */
+  recomendado_code: string | null;
+  texto: string;
+  sources: SourceChip[];
+  guardrail_passed: boolean;
+  modelo: string;
+}
+
+/**
+ * Recomendación de IA sobre la simulación en pantalla.
+ *
+ * El backend vuelve a pedir las tasas con el mismo `monto` y `plazo_dias` y se las pasa
+ * al modelo ya calculadas: la IA cita exactamente las cifras que el usuario está viendo.
+ * Por eso el front no manda ni un número calculado por él, solo lo que el usuario eligió.
+ */
+export function recomendarSimulacion(
+  simulacion: SimuladorRequest,
+): Promise<SimuladorResponse> {
+  return http.post<SimuladorResponse>('/api/agent/simulador', simulacion);
+}
