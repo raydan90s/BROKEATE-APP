@@ -17,6 +17,7 @@ import NuevaSubcuentaPage from '@/app/inversionista/pages/NuevaSubcuentaPage';
 import PropuestaPage from '@/app/inversionista/pages/PropuestaPage';
 import SimuladorPage from '@/app/inversionista/pages/SimuladorPage';
 import SubcuentaDetallePage from '@/app/inversionista/pages/SubcuentaDetallePage';
+import VincularWhatsAppPage from '@/app/whatsapp/pages/VincularWhatsAppPage';
 import { useAuth } from '@/context/AuthContext';
 import type {
   AdvisorStackParamList,
@@ -64,6 +65,7 @@ function InvestorStack() {
       <Investor.Screen name="Comparador" component={ComparadorPage} />
       <Investor.Screen name="Simulador" component={SimuladorPage} />
       <Investor.Screen name="Mercados" component={MercadosSimuladorPage} />
+      <Investor.Screen name="VincularWhatsApp" component={VincularWhatsAppPage} />
     </Investor.Navigator>
   );
 }
