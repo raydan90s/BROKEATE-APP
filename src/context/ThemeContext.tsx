@@ -34,6 +34,11 @@ const ThemeContext = createContext<ThemeContextValue | null>(null);
  * `text-text-primary`…) se repinta sola. Este contexto solo añade lo que NativeWind no
  * hace: recordar la elección entre arranques y exponer la paleta como strings para las
  * props que no aceptan className.
+ *
+ * DEPENDE de `"userInterfaceStyle": "automatic"` en app.json. NativeWind cambia el tema
+ * llamando a `Appearance.setColorScheme()`, y con la app fijada en `"light"` esa llamada
+ * es un no-op: el esquema nunca cambia y el botón del header deja de hacer nada. Si
+ * alguien vuelve a poner `"light"` ahí, el modo oscuro muere entero.
  */
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { colorScheme } = useColorScheme();
@@ -66,9 +71,13 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     AsyncStorage.setItem(TEMA_KEY, nueva).catch(() => {});
   }, []);
 
+  // Contra `tema` (lo que se ve), NO contra `colorSchemeNativeWind.get()`: ese getter lee
+  // el observable que NativeWind alimenta desde los eventos de `Appearance`, y se queda
+  // obsoleto justo después de un `set()` manual. Alternar contra él dejaba el botón
+  // calculando siempre el mismo destino.
   const alternar = useCallback(() => {
-    elegir(colorSchemeNativeWind.get() === 'dark' ? 'light' : 'dark');
-  }, [elegir]);
+    elegir(tema === 'dark' ? 'light' : 'dark');
+  }, [elegir, tema]);
 
   const valor = useMemo<ThemeContextValue>(
     () => ({
