@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity, View } from 'react-native';
 
 import { useAuth } from '@/context/AuthContext';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { AuthStackParamList } from '@/types/navigation';
 
@@ -30,6 +31,7 @@ const MIN_PASSWORD = 8;
 export default function RestablecerContrasenaPage({ route }: Props) {
   const { email } = route.params;
   const { signIn } = useAuth();
+  const colores = useColores();
 
   const [codigo, setCodigo] = useState('');
   const [password, setPassword] = useState('');
@@ -150,7 +152,7 @@ export default function RestablecerContrasenaPage({ route }: Props) {
         }`}
       >
         {enviando ? (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colores.textoSobrePrimario} />
         ) : (
           <>
             <Text
@@ -163,7 +165,7 @@ export default function RestablecerContrasenaPage({ route }: Props) {
             <Ionicons
               name="checkmark"
               size={18}
-              color={puedeEnviar ? '#FFFFFF' : '#A1A1AA'}
+              color={puedeEnviar ? colores.textoSobrePrimario : colores.textoMuted}
             />
           </>
         )}

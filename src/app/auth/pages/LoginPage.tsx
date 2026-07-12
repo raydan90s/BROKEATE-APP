@@ -1,6 +1,5 @@
 import { Ionicons } from '@expo/vector-icons';
 import type { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { StatusBar } from 'expo-status-bar';
 import { useState } from 'react';
 import {
   ActivityIndicator,
@@ -16,6 +15,7 @@ import {
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { useAuth } from '@/context/AuthContext';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { AuthStackParamList } from '@/types/navigation';
 
@@ -25,6 +25,7 @@ type Campo = 'email' | 'password';
 type Props = NativeStackScreenProps<AuthStackParamList, 'Login'>;
 
 export default function LoginPage({ navigation }: Props) {
+  const colores = useColores();
   const { signIn } = useAuth();
 
   const [email, setEmail] = useState('');
@@ -78,7 +79,6 @@ export default function LoginPage({ navigation }: Props) {
 
   return (
     <SafeAreaView className="flex-1 bg-surface-background">
-      <StatusBar style="dark" />
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === 'ios' ? 'padding' : undefined}
@@ -117,7 +117,7 @@ export default function LoginPage({ navigation }: Props) {
                   <Ionicons
                     name="mail-outline"
                     size={20}
-                    color={enfocado === 'email' ? '#1E3A8A' : '#A1A1AA'}
+                    color={enfocado === 'email' ? colores.primario : colores.textoMuted}
                   />
                   <TextInput
                     value={email}
@@ -128,7 +128,7 @@ export default function LoginPage({ navigation }: Props) {
                     onFocus={() => setEnfocado('email')}
                     onBlur={() => setEnfocado(null)}
                     placeholder="tu@correo.ec"
-                    placeholderTextColor="#A1A1AA"
+                    placeholderTextColor={colores.textoMuted}
                     autoCapitalize="none"
                     autoCorrect={false}
                     keyboardType="email-address"
@@ -148,7 +148,7 @@ export default function LoginPage({ navigation }: Props) {
                   <Ionicons
                     name="lock-closed-outline"
                     size={20}
-                    color={enfocado === 'password' ? '#1E3A8A' : '#A1A1AA'}
+                    color={enfocado === 'password' ? colores.primario : colores.textoMuted}
                   />
                   <TextInput
                     value={password}
@@ -159,7 +159,7 @@ export default function LoginPage({ navigation }: Props) {
                     onFocus={() => setEnfocado('password')}
                     onBlur={() => setEnfocado(null)}
                     placeholder="••••••••"
-                    placeholderTextColor="#A1A1AA"
+                    placeholderTextColor={colores.textoMuted}
                     secureTextEntry={!verPassword}
                     autoCapitalize="none"
                     autoCorrect={false}
@@ -180,7 +180,7 @@ export default function LoginPage({ navigation }: Props) {
                     <Ionicons
                       name={verPassword ? 'eye-off-outline' : 'eye-outline'}
                       size={20}
-                      color="#71717A"
+                      color={colores.textoMuted}
                     />
                   </TouchableOpacity>
                 </View>
@@ -200,7 +200,7 @@ export default function LoginPage({ navigation }: Props) {
 
             {error ? (
               <View className="flex-row items-center gap-2 rounded-2xl bg-stateAlpha-errorSoft px-4 py-3">
-                <Ionicons name="alert-circle" size={18} color="#EF4444" />
+                <Ionicons name="alert-circle" size={18} color={colores.error} />
                 <Text className="flex-1 text-body text-state-error">{error}</Text>
               </View>
             ) : null}
@@ -215,7 +215,7 @@ export default function LoginPage({ navigation }: Props) {
               }`}
             >
               {enviando ? (
-                <ActivityIndicator color="#FFFFFF" />
+                <ActivityIndicator color={colores.textoSobrePrimario} />
               ) : (
                 <>
                   <Text
@@ -228,7 +228,7 @@ export default function LoginPage({ navigation }: Props) {
                   <Ionicons
                     name="arrow-forward"
                     size={18}
-                    color={puedeEnviar ? '#FFFFFF' : '#A1A1AA'}
+                    color={puedeEnviar ? colores.textoSobrePrimario : colores.textoMuted}
                   />
                 </>
               )}

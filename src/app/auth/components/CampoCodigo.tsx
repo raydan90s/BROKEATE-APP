@@ -1,6 +1,6 @@
 import { Text, TextInput, View } from 'react-native';
 
-import { COLORES } from '@/constants/colores';
+import { useColores } from '@/context/ThemeContext';
 
 interface CampoCodigoProps {
   valor: string;
@@ -27,6 +27,8 @@ export default function CampoCodigo({
   editable = true,
   onCompleto,
 }: CampoCodigoProps) {
+  const colores = useColores();
+
   function alEscribir(texto: string) {
     // El teclado numérico de iOS igual deja meter espacios y guiones al pegar.
     const limpio = texto.replace(/\D/g, '').slice(0, LARGO_CODIGO);
@@ -44,7 +46,7 @@ export default function CampoCodigo({
         onChangeText={alEscribir}
         editable={editable}
         placeholder="––––––"
-        placeholderTextColor={COLORES.borde}
+        placeholderTextColor={colores.borde}
         keyboardType="number-pad"
         // Rellena el código desde el correo/SMS sin que el usuario cambie de app.
         textContentType="oneTimeCode"

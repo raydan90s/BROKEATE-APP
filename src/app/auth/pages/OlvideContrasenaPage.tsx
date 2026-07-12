@@ -3,7 +3,7 @@ import type { NativeStackScreenProps } from '@react-navigation/native-stack';
 import { useState } from 'react';
 import { ActivityIndicator, Text, TouchableOpacity } from 'react-native';
 
-import { COLORES } from '@/constants/colores';
+import { useColores } from '@/context/ThemeContext';
 import { ApiError } from '@/services/http';
 import type { AuthStackParamList } from '@/types/navigation';
 
@@ -24,6 +24,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'OlvideContrasena'>;
  * exactamente el comportamiento correcto, aunque parezca menos "servicial".
  */
 export default function OlvideContrasenaPage({ navigation }: Props) {
+  const colores = useColores();
   const [email, setEmail] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [enviando, setEnviando] = useState(false);
@@ -88,7 +89,7 @@ export default function OlvideContrasenaPage({ navigation }: Props) {
         }`}
       >
         {enviando ? (
-          <ActivityIndicator color="#FFFFFF" />
+          <ActivityIndicator color={colores.textoSobrePrimario} />
         ) : (
           <>
             <Text
@@ -101,7 +102,7 @@ export default function OlvideContrasenaPage({ navigation }: Props) {
             <Ionicons
               name="arrow-forward"
               size={18}
-              color={puedeEnviar ? '#FFFFFF' : COLORES.textoMuted}
+              color={puedeEnviar ? colores.textoSobrePrimario : colores.textoMuted}
             />
           </>
         )}
