@@ -13,12 +13,10 @@ import type { ProviderInfo } from '../services/agentApi';
  */
 
 // Identidad visual de cada proveedor. Estos colores son de marca ajena (Google, OpenAI,
-// Anthropic, DeepSeek): NO cambian con el tema, igual que no cambia su logo.
 const META: Record<string, { label: string; color: string }> = {
   google: { label: 'Gemini', color: '#4285F4' },
   openai: { label: 'OpenAI', color: '#10A37F' },
-  anthropic: { label: 'Claude', color: '#D97757' },
-  deepseek: { label: 'DeepSeek', color: '#4D6BFE' },
+  anthropic: { label: 'Claude', color: '#D97757' }
 };
 
 // Gris del medio: legible contra fondo claro y oscuro (el proveedor desconocido no
@@ -83,9 +81,8 @@ export default function ProviderSelector({ providers, value, onChange, onOpen }:
                     onChange(p.id);
                     setAbierto(false);
                   }}
-                  className={`flex-row items-center gap-3 rounded-xl px-3 py-2.5 ${
-                    seleccionado ? 'bg-brandAlpha-primarySoft' : ''
-                  } ${!p.disponible ? 'opacity-40' : ''}`}
+                  className={`flex-row items-center gap-3 rounded-xl px-3 py-2.5 ${seleccionado ? 'bg-brandAlpha-primarySoft' : ''
+                    } ${!p.disponible ? 'opacity-40' : ''}`}
                 >
                   <View
                     style={{ backgroundColor: pm.color }}
