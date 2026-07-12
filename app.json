@@ -6,7 +6,7 @@
     "orientation": "portrait",
     "icon": "./assets/images/logoInicioApp.png",
     "scheme": "brokeate",
-    "userInterfaceStyle": "light",
+    "userInterfaceStyle": "automatic",
     "ios": {
       "supportsTablet": true,
       "icon": "./assets/expo.icon"

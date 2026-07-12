@@ -204,7 +204,10 @@ export default function MisSubcuentasPage({ navigation }: Props) {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-surface-background">
+    // Solo `top`: esta pantalla vive DENTRO del tab navigator, y la barra de tabs ya
+    // resuelve el inset de abajo. Con los cuatro edges se sumaba un segundo margen
+    // inferior y la barra sticky quedaba flotando por encima de Inicio/Noticias.
+    <SafeAreaView className="flex-1 bg-surface-background" edges={['top']}>
       <HomeHeader
         title={user ? `Hola, ${user.name}` : 'Inicio'}
         subtitle="Tus subcuentas"
