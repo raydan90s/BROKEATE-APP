@@ -1,91 +1,205 @@
-# Guía de Desarrollo | [cite_start]Hackathon de Agentes Financieros IA [cite: 5]
+# Brokeate — Robo-Advisor con asesor humano en el lazo
 
-## [cite_start]Reglas de Alcance e Implementación [cite: 6]
-* [cite_start]Cada producto debe cumplir, como mínimo, con los requisitos y criterios de aceptación definidos para su track. [cite: 7]
-* [cite_start]Los equipos pueden agregar funcionalidades, automatizaciones, integraciones o experiencias que consideren necesarias, siempre que no eliminen ni sustituyan el alcance mínimo requerido. [cite: 8]
-* [cite_start]Se permiten datos ficticios, archivos de prueba e integraciones simuladas si el flujo funcional se puede demostrar de extremo a extremo. [cite: 13]
-* [cite_start]Las acciones reguladas o sensibles deben quedar como propuesta, alerta o solicitud de aprobación; no es necesario ejecutarlas en producción. [cite: 14]
-* [cite_start]Cada equipo conserva libertad creativa sobre interfaz, canal, tecnología y funcionalidades adicionales. [cite: 15]
+App móvil y web (Expo / React Native) de un robo-advisor: el cliente responde un test
+de riesgo, el sistema calcula su perfil **en la base de datos**, arma una propuesta de
+portafolio con el catálogo del banco y un **asesor humano la aprueba, edita o rechaza**
+antes de que sea definitiva. Un agente conversacional (LangGraph + Gemini) explica los
+números, pero nunca los inventa.
 
----
+Hackathon de Agentes Financieros IA — **Track 3: Robo-Advisory y Automatización de
+Estrategias de Inversión**.
 
-## [cite_start]Track 3: Robo-Advisory y Automatización de Estrategias de Inversión [cite: 16]
-* [cite_start]**Agentes involucrados:** Asesor Financiero e Inversiones IA. [cite: 17]
-* [cite_start]**Problema que resuelve:** Estandariza el perfilamiento de riesgo y la generación de propuestas de portafolio, manteniendo al asesor humano como responsable final. [cite: 18]
-
-### [cite_start]Historia de Usuario 1: Perfil de inversionista transparente [cite: 19]
-* [cite_start]**Como:** potencial inversionista [cite: 20]
-* [cite_start]**Quiero:** completar un diagnóstico de objetivo, horizonte y tolerancia al riesgo [cite: 21]
-* [cite_start]**Para que:** pueda recibir una propuesta adecuada a mi perfil [cite: 22]
-* [cite_start]**Criterios de aceptación:** [cite: 23]
-  * [cite_start]El Asesor Financiero IA realiza un cuestionario de perfilamiento. [cite: 25]
-  * [cite_start]Calcula un perfil preliminar mediante reglas visibles y versionadas. [cite: 25]
-  * [cite_start]Permite al usuario revisar respuestas y entender cómo influyen en el resultado. [cite: 27]
-
-### [cite_start]Historia de Usuario 2: Propuesta explicable de portafolio [cite: 28]
-* [cite_start]**Como:** inversionista perfilado [cite: 29]
-* [cite_start]**Quiero:** visualizar una propuesta de distribución de activos [cite: 30]
-* [cite_start]**Para que:** pueda comprender el riesgo, horizonte y diversificación sugerida [cite: 31]
-* [cite_start]**Criterios de aceptación:** [cite: 32]
-  * [cite_start]El sistema usa un catálogo ficticio o aprobado de instrumentos. [cite: 36]
-  * [cite_start]Muestra porcentajes de asignación, riesgo esperado y una explicación legible. [cite: 39]
-  * [cite_start]No ejecuta órdenes ni promete rentabilidad; presenta una propuesta para revisión. [cite: 40]
-
-### [cite_start]Historia de Usuario 3: Revisión por asesor autorizado [cite: 41]
-* [cite_start]**Como:** asesor de inversiones [cite: 42]
-* [cite_start]**Quiero:** revisar y aprobar una propuesta generada por IA [cite: 43]
-* [cite_start]**Para que:** pueda cumplir mis responsabilidades antes de recomendar o ejecutar [cite: 44]
-* [cite_start]**Criterios de aceptación:** [cite: 45]
-  * [cite_start]El asesor recibe un resumen del perfil, propuesta y justificación. [cite: 49]
-  * [cite_start]Puede aprobar, editar o rechazar la propuesta. [cite: 50]
-  * [cite_start]Cada decisión queda registrada con fecha, versión de reglas y responsable. [cite: 51]
+- **Demo web:** https://roboadvisorapp.vercel.app
+- **API:** https://roboadvisory-backend.onrender.com (`/docs` para el Swagger, `/health`
+  para el healthcheck)
 
 ---
 
-# [cite_start]Guía de Entregables - Fase 1: Preselección Virtual [cite: 58, 59]
+## Repositorios
 
-[cite_start]**Deadline de entrega:** Domingo 12 de julio de 2026, 23:59 PM [cite: 63]
-[cite_start]**Canal de entrega:** Correo electrónico a taws@fiec.espol.edu.ec [cite: 84, 91, 92]
+Este repo es el **frontend Expo** y, además, el paraguas del proyecto: trae el backend y
+la web como submódulos de git.
 
-## [cite_start]Los 5 Enlaces Obligatorios de tu Proyecto [cite: 64, 126]
-1. **Video:** Enlace de YouTube o en la nube. [cite_start]Duración: 3 minutos. [cite: 65, 66]
-2. [cite_start]**ZIP del código:** Código fuente comprimido. [cite: 69, 71]
-3. [cite_start]**Documento explicativo:** Explicación técnica del proyecto. [cite: 70, 72]
-4. [cite_start]**Link del repositorio:** Enlace directo a tu repo (GitHub u otro). [cite: 67, 68]
-5. [cite_start]**Link de despliegue:** Enlace directo a tu demo desplegada. [cite: 73, 74]
+| Carpeta | Repo | Qué es |
+|---|---|---|
+| (raíz) | este repo | App Expo / React Native (Android, iOS, web) |
+| [backend/](backend/) | [BROKEATE-BACKEND](https://github.com/raydan90s/BROKEATE-BACKEND) | FastAPI + Postgres (Supabase) + agente LangGraph |
+| [web/](web/) | [BROKEATE-WEB](https://github.com/raydan90s/BROKEATE-WEB) | Port web en Vite/React |
 
-[cite_start]*Nota: El video, el ZIP y el documento pueden ir juntos en una carpeta compartida; el repositorio y el despliegue van como enlaces directos.* [cite: 75, 76]
-
-### [cite_start]Contenido del Documento Explicativo [cite: 93]
-1. [cite_start]Diagrama de arquitectura (agente, canales, integraciones externas). [cite: 96]
-2. [cite_start]Track asignado. [cite: 96]
-3. [cite_start]Tipo de negocio al que aplica. [cite: 96]
-4. [cite_start]Cómo se integraría a un sistema empresarial existente. [cite: 96]
+```bash
+git clone --recurse-submodules https://github.com/raydan90s/RoboAdvisorApp.git
+# si ya lo clonaste sin submódulos:
+git submodule update --init --recursive
+```
 
 ---
 
-## [cite_start]Criterios de Evaluación [cite: 139, 140]
+## Cómo levantarlo
 
-1. [cite_start]**Viabilidad Técnica / Arquitectura Agéntica:** Arquitectura sólida y no un prototipo frágil: lógica separada de la interfaz, manejo de continuidad de la conversación y confiabilidad verificable. [cite: 142, 143]
-2. [cite_start]**Impacto / Ajuste al Track:** Qué tan bien resuelve el problema real del track y su viabilidad como producto comercial. [cite: 144, 145]
-3. [cite_start]**Mitigación de Riesgos / Antialucinación:** Que el agente no entregue información financiera incorrecta o inventada. [cite: 146, 147]
-4. [cite_start]**Demo y Experiencia de Usuario:** Que la demostración sea clara, fluida y fácil de seguir. [cite: 148, 149, 150]
+### 1. Backend
 
-### [cite_start]Calidad y Confiabilidad (Pruebas Automatizadas) [cite: 151, 152]
-| Nivel | Descripción de la Evidencia |
+Ver [backend/README.md](backend/README.md) para el detalle (Supabase, `schema.sql`,
+`seed.sql`, keys de Gemini y Alpha Vantage). En corto:
+
+```powershell
+cd backend
+python -m venv .venv; .\.venv\Scripts\Activate.ps1
+pip install -r requirements.txt
+uvicorn src.main:app --reload --host 0.0.0.0
+```
+
+Requiere **Python 3.12**.
+
+### 2. Frontend
+
+```powershell
+npm install
+npx expo start        # w = web · a = Android · o escanea el QR con Expo Go
+```
+
+Variables de entorno (archivo `.env` en la raíz, ver `.env` de ejemplo):
+
+| Variable | Para qué |
 |---|---|
-| **MÍNIMO (README)** | [cite_start]Documenta los casos probados manualmente (input -> resultado esperado -> obtenido), las validaciones del código aunque no sean tests formales, y capturas de cómo probar. [cite: 155] |
-| **NIVEL BÁSICO** | [cite_start]Carpeta tests/ con archivos que corran con pytest, unittest o jest, incluyendo un test_agent.py que confirme que el agente responde algo coherente. [cite: 155] |
-| **NIVEL INTERMEDIO** | [cite_start]Tests unitarios de funciones críticas, tests de los nodos del grafo de estados (LangGraph) y mocks de la API del LLM. [cite: 155] |
+| `EXPO_PUBLIC_API_BASE_URL` | URL del backend. Contra el desplegado: `https://roboadvisory-backend.onrender.com` |
+| `EXPO_PUBLIC_WHATSAPP_NUMERO` | Número del bot de Twilio; solo prellena el mensaje al abrir WhatsApp |
+
+> **Desde un celular físico:** `localhost` apunta al teléfono, no a tu PC. Levanta el
+> backend con `--host 0.0.0.0` y pon la IP local de tu máquina
+> (`http://192.168.x.x:8000`) en `EXPO_PUBLIC_API_BASE_URL`.
+
+### Cuentas demo (las siembra `seed.sql`)
+
+| Correo | Rol | Contraseña |
+|---|---|---|
+| `inversionista@demo.ec` | inversionista | `demo1234` |
+| `juan@demo.ec` | inversionista (perfil Moderado, con datos) | `demo1234` |
+| `asesor@demo.ec` | asesor | `demo1234` |
+
+### Scripts
+
+| Comando | Qué hace |
+|---|---|
+| `npm start` | Expo dev server |
+| `npm run web` / `android` / `ios` | Arranca en un target concreto |
+| `npm run typecheck` | `tsc --noEmit` |
+| `npm run apk` | Build de APK en EAS (perfil `preview`) |
+| `npm run vercel-build` | `expo export -p web` → `dist/` (lo que despliega Vercel) |
 
 ---
 
-## [cite_start]El Reto del Patrocinador: Best Use of Google Gemini [cite: 182, 183]
+## Stack
 
-* [cite_start]Reclama tu acceso a Google AI Pro con tu correo estudiantil antes de empezar a construir en `mlh.link/google-for-students`. [cite: 186, 196]
-* [cite_start]Si tu proyecto usa la API de Gemini, menciónalo claramente en tu documento explicativo para calificar al premio. [cite: 197]
+- **Expo SDK 54** + React Native 0.81 + React 19. El SDK está **pinneado**: 54 es el
+  último con cliente publicado de Expo Go; SDK 55+ exige development build (ver
+  [AGENTS.md](AGENTS.md)).
+- **React Navigation** (stack + bottom tabs), no Expo Router — decisión deliberada.
+- **NativeWind 4** (Tailwind) con los tokens de marca en
+  [tailwind.config.js](tailwind.config.js), y los mismos colores en
+  [src/constants/colores.ts](src/constants/colores.ts) para props que no aceptan clases.
+- **expo-secure-store** para el JWT.
+- Backend: **FastAPI + Postgres (Supabase) + LangGraph**; mercados externos vía **Alpha
+  Vantage** (wrapper cacheado 1 h con respaldo simulado, porque el free tier son 25
+  requests/día).
 
-### [cite_start]Enlaces de Interés Gemini [cite: 184]
-* [cite_start]**Guía de inicio rápido:** mlh.link/gemini-quickstart [cite: 186]
-* [cite_start]**Documentación API:** mlh.link/gemini-docs [cite: 186]
-* [cite_start]**Ejemplos de código (cookbook):** mlh.link/gemini-cookbook [cite: 186]
+## Estructura del frontend
+
+```
+src/
+├── app/
+│   ├── auth/           login, registro, verificación de correo, recuperación
+│   ├── inversionista/  subcuentas, cuestionario, propuesta, comparador,
+│   │                   simulador bancario, simulador de mercados, noticias
+│   ├── asesor/         cola de revisión, detalle de propuesta, auditoría
+│   ├── agente/         chat flotante (burbujas, chips de fuente, selector de proveedor)
+│   └── whatsapp/       vinculación del bot
+├── components/shared/  Boton, Tarjeta, Calificacion, DisclaimerBanner, LineChart…
+├── context/            AuthContext (token + rol) · ThemeContext (claro/oscuro)
+├── navigation/         RootNavigator — decide el árbol según el rol del token
+├── services/           http.ts (fetch + JWT) · tokenStorage.ts (SecureStore)
+└── utils/              formato de montos, explicaciones
+```
+
+El **rol del token decide toda la navegación**: `advisor` ve la cola y la auditoría;
+`investor`, sus subcuentas y el feed. `logout()` no navega a ningún lado —
+[RootNavigator.tsx](src/navigation/RootNavigator.tsx) vuelve a decidir y remonta el
+árbol.
+
+---
+
+## Las tres historias de usuario del track
+
+| HU | Dónde vive |
+|---|---|
+| **HU1 — Perfil transparente.** El cuestionario lo sirve la base (`GET /questions`), el puntaje lo calcula Postgres contra `scoring_rules`, y `ComoSeCalculoPage` muestra el desglose respuesta → puntos → umbral. | `CuestionarioPage`, `ComoSeCalculoPage` |
+| **HU2 — Propuesta explicable.** Asignación por porcentajes con montos en USD calculados en SQL, riesgo esperado, calificación de cada emisora **con su calificadora y fecha**, y el disclaimer de que no se ejecuta ninguna orden. | `PropuestaPage`, `VistaPropuesta`, `DonutPortafolio` |
+| **HU3 — Revisión del asesor.** Cola de pendientes, detalle con banderas deterministas (monto bajo el mínimo, puntaje al borde del umbral), y aprobar / editar / rechazar. Cada decisión queda con fecha, versión de reglas y responsable. | `ColaRevisionPage`, `DetallePropuestaPage`, `AuditoriaPage` |
+
+Además: **subcuentas** (repartir el capital total en varios objetivos, cada uno con su
+propio perfil y propuesta), **comparador de tasas** con elegibilidad por perfil,
+**simulador** bancario, **simulador de mercados globales** con gráfico histórico, y
+**ticker** de mercados en el home.
+
+---
+
+## Antialucinación (criterio de evaluación #3)
+
+**Ningún número que el LLM escribe nace en el LLM.**
+
+- Puntaje, perfil y porcentajes los calculan `scoring_rules`, `profile_thresholds` y
+  `allocation_template_items` **en Postgres**. El LLM solo los redacta.
+- Todo texto generado se valida contra un `ContextoPermitido` (`guardrails.py`): el
+  conjunto cerrado de números, productos, emisores y calificaciones que ese texto tiene
+  derecho a citar. Si el modelo inventa algo, el texto se **descarta** (no se corrige),
+  se reintenta una vez, y si reincide se cae a una plantilla determinista construida
+  desde los datos.
+- El agente clasifica cada mensaje en 3 rutas: **A** (datos del banco), **B** (mixto:
+  banco + mercados), **C** (100 % mercados externos, con cero contexto del banco). Las
+  rutas B y C **nunca escriben** en `proposals` — solo leen y devuelven texto, marcado
+  en la UI con borde ámbar y el banner *"SIMULACIÓN EDUCATIVA · FUERA DEL BANCO"*.
+- Predicciones de mercado ("¿va a subir el bitcoin?") y órdenes de compra/venta están
+  **bloqueadas en las tres rutas**: dar una cotización actual no es lo mismo que
+  predecirla.
+- Un rating nunca se muestra sin su calificadora y su fecha — el componente
+  [Calificacion.tsx](src/components/shared/Calificacion.tsx) los lleva pegados.
+
+---
+
+## Pruebas
+
+- **Backend:** 58 tests con `pytest -q` (desde `backend/`). Corren contra la base real
+  sembrada por `seed.sql`: validar el motor determinista contra un mock no probaría
+  nada, porque el motor *es* la base. Cubren scoring, umbrales, subcuentas (el trigger
+  de capital), elegibilidad, guardarraíles y los nodos del grafo del agente con el LLM
+  mockeado.
+- **Frontend:** `npm run typecheck` (tsc estricto). Los flujos de chat, ticker y
+  simulador de mercados se verificaron de punta a punta con Playwright contra el backend
+  real.
+
+---
+
+## Despliegue
+
+- **Frontend → Vercel:** [vercel.json](vercel.json) define el build (`expo export -p
+  web` → `dist/`). El proyecto vive en una cuenta de Vercel distinta a la del owner del
+  repo, así que el auto-deploy por push no está conectado: tras cambios hay que correr
+  `vercel deploy --prod`.
+- **Backend → Render:** blueprint en `backend/render.yaml`, `autoDeploy` activo. Las
+  keys (`DATABASE_URL`, `JWT_SECRET`, `GEMINI_API_KEY`, `ALPHA_VANTAGE_API_KEY`,
+  `CORS_ORIGINS`) se setean en el dashboard.
+- **Android:** `npm run apk` (EAS, perfil `preview`).
+
+---
+
+## Documentación
+
+| Archivo | Contenido |
+|---|---|
+| [backend/README.md](backend/README.md) | Endpoints, esquema, migraciones, variables |
+| [AGENTS.md](AGENTS.md) | Regla de oro del repo: Expo SDK 54 pinneado |
+
+## Deuda conocida
+
+El front llama a `POST /api/agent/simulador` y
+`PUT /api/investor/proposals/{id}/allocation`, que **no existen** en el backend actual
+(quedaron en una rama sin mergear). Esas dos llamadas fallan hasta que se implementen.
