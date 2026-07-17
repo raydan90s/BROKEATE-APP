@@ -42,4 +42,9 @@ example
 /ios
 /android
 .vercel
-.env*
+.env
+
+# documentación interna: fuera del repo por decisión del equipo
+docs/
+BROKEATE.docx
+retro.txt
