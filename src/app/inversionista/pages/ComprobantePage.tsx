@@ -31,8 +31,13 @@ function Linea({ linea }: { linea: LineaOrden }) {
             </Text>
           ) : null}
         </View>
+        {/* Lo que recibió ESTE banco, ya neto de su parte de comisión. El % sigue siendo el
+            de la cartera: la comisión se prorratea igual en todas las líneas, así que
+            descontarla no corre a nadie de su porcentaje. */}
         <View className="items-end">
-          <Text className="text-body-md font-bold text-text-primary">{usd(linea.monto)}</Text>
+          <Text className="text-body-md font-bold text-text-primary">
+            {usd(linea.monto_invertido)}
+          </Text>
           <Text className="text-caption text-text-muted">{porcentaje(linea.porcentaje)}</Text>
         </View>
       </View>
@@ -56,12 +61,16 @@ function Linea({ linea }: { linea: LineaOrden }) {
  * cobró Brokeate.
  *
  * La comisión se muestra **a propósito**, y es la decisión de diseño más importante de
- * esta pantalla. Un intermediario que cobra por convenio tiene un incentivo obvio para
- * empujar al banco que mejor le paga, y "confía en que no lo hacemos" no es una respuesta.
- * Mostrar la cifra —y decir que es la misma en todas las instituciones con convenio— sí lo
- * es: si a Brokeate le da igual cuál elijas, la recomendación no puede estar sesgada por
- * la comisión. Y no es una promesa de marketing: en la base no existe una columna donde
- * escribir una tasa distinta por banco (`commission_policies`, migración 005).
+ * esta pantalla. La paga el cliente y sale de su inversión, así que acá se ve la resta
+ * entera: puso tanto, se cobró tanto, se invirtió tanto. Un comprobante que solo mostrara
+ * el total comprometido estaría escondiendo la comisión detrás de un número más grande.
+ *
+ * Y sigue diciendo que es la misma en todas las instituciones con convenio, que ahora
+ * importa más que antes: un intermediario tiene un incentivo obvio para empujar al banco
+ * que mejor le paga, y desde que la comisión la paga el cliente ese sesgo se pagaría con
+ * su plata. "Confía en que no lo hacemos" no es una respuesta; que en la base no exista una
+ * columna donde escribir una tasa distinta por banco sí lo es (`commission_policies`,
+ * migración 005).
  *
  * `comision_rationale` viene del servidor y no está escrito acá por lo mismo de siempre:
  * si mañana cambia la política, esta pantalla cambia sola en vez de mentir.
@@ -117,8 +126,11 @@ export default function ComprobantePage() {
           <Text className="text-caption font-bold uppercase text-text-secondary">
             {confirmada ? 'Invertido' : 'Enviado al banco'}
           </Text>
+          {/* El neto: la cifra grande del comprobante tiene que ser la que está trabajando
+              en los bancos, no la que salió de la cuenta del cliente. El desglose completo
+              está abajo. */}
           <Text className="text-display font-bold text-text-primary">
-            {usd(orden.monto_total)}
+            {usd(orden.monto_invertido)}
           </Text>
           <Text className="text-caption text-text-muted">
             {orden.lineas.length}{' '}
@@ -160,11 +172,9 @@ export default function ComprobantePage() {
           </Text>
 
           <View className="flex-row items-baseline justify-between">
-            <Text className="text-body-md text-text-primary">Tú pagas</Text>
-            <Text className="text-heading font-bold text-state-success">USD 0</Text>
+            <Text className="text-body text-text-secondary">Tu subcuenta</Text>
+            <Text className="text-body-md text-text-primary">{usd(orden.monto_total)}</Text>
           </View>
-
-          <View className="h-px bg-surface-border" />
 
           {/* La cuenta completa y no solo el resultado: tasa × monto = comisión. Que el
               usuario pueda rehacerla de cabeza es el punto — un porcentaje suelto al lado
@@ -172,15 +182,22 @@ export default function ComprobantePage() {
               exactamente lo que esta app no le pide a nadie. */}
           <View className="flex-row items-start justify-between gap-3">
             <View className="flex-1">
-              <Text className="text-body text-text-secondary">
-                La institución le paga a Brokeate
-              </Text>
+              <Text className="text-body text-text-secondary">Comisión de Brokeate</Text>
               <Text className="text-caption text-text-muted">
                 {porcentaje(orden.comision_bps / 100)} de {usd(orden.monto_total)}
               </Text>
             </View>
-            <Text className="text-body-md font-bold text-text-primary">
-              {usd(orden.comision_total)}
+            <Text className="text-body-md text-text-primary">
+              −{usd(orden.comision_total)}
+            </Text>
+          </View>
+
+          <View className="h-px bg-surface-border" />
+
+          <View className="flex-row items-baseline justify-between">
+            <Text className="text-body-md font-bold text-text-primary">Se invirtió</Text>
+            <Text className="text-heading font-bold text-text-primary">
+              {usd(orden.monto_invertido)}
             </Text>
           </View>
 

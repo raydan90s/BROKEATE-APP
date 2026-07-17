@@ -329,7 +329,10 @@ export default function VistaPropuesta({ sessionId, titulo = 'Tu propuesta' }: P
             <FilaAccion
               icono="receipt-outline"
               titulo="Ver mi comprobante"
-              detalle={`Ya invertiste ${usd(orden.monto_total)} en ${orden.lineas.length} ${
+              // Lo invertido y no lo comprometido: de los USD que puso el cliente, esto es
+              // lo que está en bancos ganando interés. El total y la comisión están en el
+              // comprobante, a un tap.
+              detalle={`Ya invertiste ${usd(orden.monto_invertido)} en ${orden.lineas.length} ${
                 orden.lineas.length === 1 ? 'institución' : 'instituciones'
               }.`}
               onPress={() =>
@@ -364,9 +367,14 @@ export default function VistaPropuesta({ sessionId, titulo = 'Tu propuesta' }: P
                 </View>
               </View>
 
+              {/* El precio, antes del botón y no después. Que sea la última frase que se
+                  lee antes de tocar "Invertir ahora" es deliberado: una comisión que
+                  aparece recién en el comprobante es una comisión escondida, por más que
+                  esté escrita. El % y los USD salen del servidor; acá no se multiplica. */}
               <Text className="text-caption leading-4 text-text-secondary">
-                Al invertir, tu cartera se convierte en una orden por cada institución. No
-                pagas nada: la comisión la paga la institución.
+                Al invertir, tu cartera se convierte en una orden por cada institución.
+                Brokeate cobra una comisión que se descuenta de tu inversión — la ves en
+                detalle antes de confirmar.
               </Text>
               <Boton
                 titulo="Invertir ahora"
@@ -565,7 +573,7 @@ export default function VistaPropuesta({ sessionId, titulo = 'Tu propuesta' }: P
           <FilaAccion
             icono="shield-checkmark-outline"
             titulo="¿Cómo gana Brokeate?"
-            detalle="Con quién tenemos convenio y cuánto cobramos. Tú no pagas nada."
+            detalle="Con quién tenemos convenio y cuánto te cobramos por esto."
             onPress={() => navigation.navigate('Convenios')}
           />
         </View>

@@ -78,7 +78,12 @@ function FilaBanco({
         </Text>
       </View>
 
-      <Text className="text-body-md font-bold text-text-primary">{usd(linea.monto)}</Text>
+      {/* El NETO y no el bruto: esta cifra dice cuánto recibe este banco, y lo que recibe
+          es su porción menos la comisión. Pintar `linea.monto` acá sumaría más que el
+          "Se invierte" de abajo y el cliente no tendría forma de cuadrar la resta. */}
+      <Text className="text-body-md font-bold text-text-primary">
+        {usd(linea.monto_invertido)}
+      </Text>
     </View>
   );
 }
@@ -226,27 +231,37 @@ export default function InvertirPage() {
         </View>
 
         {/* Lo que se cobra, dicho acá y no solo en el comprobante: el usuario tiene que
-            poder verlo ANTES de que la pantalla lo felicite. */}
+            poder verlo ANTES de que la pantalla lo felicite.
+
+            Las tres líneas son la resta completa y en ese orden — pones, pagas, se
+            invierte — porque el número que le importa al cliente es el último y solo
+            significa algo si vio de dónde sale. Mostrar la comisión sin el neto sería
+            esconder la mitad de la cuenta; mostrar el neto sin la comisión, la otra. */}
         <View className="gap-3 rounded-2xl border border-surface-border bg-surface-background p-5">
           <View className="flex-row items-baseline justify-between">
-            <Text className="text-body-md text-text-primary">Tú pagas</Text>
-            <Text className="text-body-md font-bold text-state-success">USD 0</Text>
+            <Text className="text-body text-text-secondary">Tu subcuenta</Text>
+            <Text className="text-body-md text-text-primary">{usd(orden.monto_total)}</Text>
           </View>
 
-          <View className="h-px bg-surface-border" />
-
-          {/* Con la cuenta a la vista, igual que en el comprobante. */}
+          {/* Con la cuenta a la vista, igual que en el comprobante: tasa × monto = comisión. */}
           <View className="flex-row items-start justify-between gap-3">
             <View className="flex-1">
-              <Text className="text-body text-text-secondary">
-                La institución le paga a Brokeate
-              </Text>
+              <Text className="text-body text-text-secondary">Comisión de Brokeate</Text>
               <Text className="text-caption text-text-muted">
                 {porcentaje(orden.comision_bps / 100)} de {usd(orden.monto_total)}
               </Text>
             </View>
+            <Text className="text-body-md text-text-primary">
+              −{usd(orden.comision_total)}
+            </Text>
+          </View>
+
+          <View className="h-px bg-surface-border" />
+
+          <View className="flex-row items-baseline justify-between">
+            <Text className="text-body-md font-bold text-text-primary">Se invierte</Text>
             <Text className="text-body-md font-bold text-text-primary">
-              {usd(orden.comision_total)}
+              {usd(orden.monto_invertido)}
             </Text>
           </View>
         </View>

@@ -59,16 +59,20 @@ function TarjetaConvenio({ convenio }: { convenio: Convenio }) {
  * «¿Me recomiendas al banco que más te paga?»
  *
  * Esta pantalla existe para contestar esa pregunta, que es la más difícil que se le puede
- * hacer a un intermediario que cobra por convenio — y la más justa. La respuesta no es un
- * párrafo tranquilizador: es una cifra y una lista.
+ * hacer a un intermediario — y la más justa. La respuesta no es un párrafo tranquilizador:
+ * es una cifra y una lista.
  *
  * El argumento completo:
- *   1. La comisión es UNA sola y es la misma en todas las instituciones con convenio. A
+ *   1. Quien paga es el cliente, y se lo decimos con la cifra al frente. La versión
+ *      anterior de esta pantalla decía "tú pagas USD 0, nos paga la institución", que es
+ *      la respuesta cómoda y no era cierta: ningún banco regala una comisión por una orden
+ *      que igual iba a recibir. Un producto que no puede decir quién le paga no puede
+ *      pedir que confíen en él.
+ *   2. La comisión es UNA sola y es la misma en todas las instituciones con convenio. A
  *      Brokeate le da exactamente igual cuál elijas.
- *   2. Eso no es una promesa: en la base no hay una columna donde escribir una tasa por
+ *   3. Eso no es una promesa: en la base no hay una columna donde escribir una tasa por
  *      banco, y hay un UNIQUE que impide publicar dos (`commission_policies`, migración
  *      005). No es que no lo hagamos — es que no se puede.
- *   3. El cliente no paga nada.
  *
  * Y de paso contesta la otra: «¿por qué no me aparece tal bróker?». Porque el catálogo y
  * el convenio son listas distintas — sin convenio se puede comparar, no invertir.
@@ -127,27 +131,29 @@ export default function ConveniosPage() {
       <ScrollView className="flex-1 bg-surface-canvas" contentContainerClassName="px-5 py-6 gap-4">
         {politica ? (
           <View className="gap-3 rounded-2xl border border-surface-border bg-surface-background p-5">
-            <View className="flex-row items-baseline justify-between">
-              <Text className="text-body-md text-text-primary">Tú pagas</Text>
-              <Text className="text-heading font-bold text-state-success">USD 0</Text>
-            </View>
-
-            <View className="h-px bg-surface-border" />
-
             <View className="flex-row items-start justify-between gap-3">
               <View className="flex-1">
-                <Text className="text-body-md text-text-primary">La institución nos paga</Text>
-                {/* Un ejemplo concreto: "1,5%" no le dice nada a nadie hasta que ve que
-                    sobre USD 1.000 son USD 15. */}
+                <Text className="text-body-md text-text-primary">Tú nos pagas</Text>
+                {/* Un ejemplo concreto: "4,5%" no le dice nada a nadie hasta que ve que
+                    sobre USD 1.000 son USD 45. */}
                 <Text className="text-caption text-text-muted">
-                  {porcentaje(politica.comision_porcentaje)} de lo que inviertes · por cada
-                  USD 1.000 son {usd((1000 * politica.comision_bps) / 10000)}
+                  {porcentaje(politica.comision_porcentaje)} del total de tu subcuenta, una
+                  sola vez · por cada USD 1.000 son {usd((1000 * politica.comision_bps) / 10000)}
                 </Text>
               </View>
               <Text className="text-heading font-bold text-text-primary">
                 {porcentaje(politica.comision_porcentaje)}
               </Text>
             </View>
+
+            {/* Nadie más nos paga, y decirlo es la mitad del argumento: si además
+                cobráramos por convenio, el cliente tendría que preguntarse cuál de los dos
+                incentivos manda. Cobramos de un solo lado y ese lado es el suyo. */}
+            <Text className="text-caption leading-4 text-text-secondary">
+              Se descuenta de tu inversión al cursar la orden: si inviertes USD 1.000, se
+              colocan {usd(1000 - (1000 * politica.comision_bps) / 10000)}. Es lo único que
+              cobramos — las instituciones no nos pagan nada.
+            </Text>
 
             {/* El núcleo del argumento. Se afirma solo si el servidor lo afirma. */}
             {politica.misma_para_todas ? (
